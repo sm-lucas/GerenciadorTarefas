@@ -35,7 +35,49 @@ namespace GerenciadorTarefas
                 Console.WriteLine("========================================");
                 Console.WriteLine("      GERENCIADOR DE TAREFAS .NET       ");
                 Console.WriteLine("========================================");
+                // Exibe a lista de tarefas atual
+                if (listaTarefas.Count == 0)
+                {
+                    Console.WriteLine("\nSua lista está vazia.");
+                }
+                else
+                {
+                    for (int i = 0; i < listaTarefas.Count; i++)
+                    {
+                        Console.WriteLine($"{i + 1}. {listaTarefas[i]}");
+                    }
+                }
 
+                Console.WriteLine("\n----------------------------------------");
+                Console.WriteLine("1. Adicionar Tarefa");
+                Console.WriteLine("2. Marcar como Concluída/Pendente");
+                Console.WriteLine("3. Limpar Tarefas Concluídas");
+                Console.WriteLine("4. Sair");
+                Console.Write("\nEscolha uma opção: ");
+
+                string opcao = Console.ReadLine();
+
+                switch (opcao)
+                {
+                    case "1":
+                        Adicionar();
+                        break;
+                    case "2":
+                        AlternarStatus();
+                        break;
+                    case "3":
+                        LimparConcluidas();
+                        break;
+                    case "4":
+                        executando = false;
+                        break;
+                    default:
+                        Console.WriteLine("Opção inválida! Pressione qualquer tecla.");
+                        Console.ReadKey();
+                        break;
+                }
+
+            }
         }
     }
 }
