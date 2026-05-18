@@ -76,7 +76,81 @@ namespace GerenciadorTarefas
                         Console.ReadKey();
                         break;
                 }
+                // Salva sempre que houver uma alteração
+                SalvarDadosNoArquivo();
+            }
+        }
 
+        static void Adicionar()
+        {
+            Console.Write("\nO que você precisa fazer? ");
+            string desc = Console.ReadLine();
+            if (!string.IsNullOrWhiteSpace(desc))
+            {
+                listaTarefas.Add(new Tarefa { Descricao = desc, Concluida = false });
+            }
+        }
+
+        static void AlternarStatus()
+        {
+            Console.Write("\nDigite o número da tarefa: ");
+            if (int.TryParse(Console.ReadLine(), out int index) && index > 0 && index <= listaTarefas.Count)
+            {
+                listaTarefas[index - 1].Concluida = !listaTarefas[index - 1].Concluida;
+            }
+            else
+            {
+                Console.WriteLine("Número inválido!");
+                Console.ReadKey();
+            }
+        }
+
+        static void LimparConcluidas()
+        {
+            int removidas = listaTarefas.RemoveAll(t => t.Concluida);
+            Console.WriteLine($"\n{removidas} tarefa(s) removida(s).");
+            Console.ReadKey();
+        }
+
+        // Lógica para Persistência de Dados (Arquivos)
+        static void SalvarDadosNoArquivo()
+        {
+            try
+            {
+                List<string> linhas = listaTarefas.Select(t => $"{t.Descricao};{t.Concluida}").ToList();
+                File.WriteAllLines(caminhoArquivo, linhas);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Erro ao salvar dados: " + ex.Message);
+            }
+        }
+
+        static void CarregarDadosDoArquivo()
+        {
+            try
+            {
+                if (File.Exists(caminhoArquivo))
+                {
+                    string[] linhas = File.ReadAllLines(caminhoArquivo);
+                    foreach (string linha in linhas)
+                    {
+                        string[] partes = linha.Split(';');
+                        if (partes.Length == 2)
+                        {
+                            listaTarefas.Add(new Tarefa
+                            {
+                                Descricao = partes[0],
+                                Concluida = bool.Parse(partes[1])
+                            });
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                // Se o arquivo estiver corrompido, inicia uma lista nova
+                listaTarefas = new List<Tarefa>();
             }
         }
     }
